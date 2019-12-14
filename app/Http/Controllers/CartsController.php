@@ -94,7 +94,7 @@ class CartsController extends Controller
             $cartDetail->delete();
           }
 
-          return redirect('/')->with('success', 'Your Order has been processed, Thank You for Shopping!');
+          return redirect('order')->with('success', 'Your Order has been processed, Thank You for Shopping!');
         }
       }
       else {

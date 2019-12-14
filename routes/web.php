@@ -24,6 +24,9 @@ Route::get('/', 'PagesController@index');
 // Route from profile link to UsersController show function
 Route::get('/profile', 'UsersController@show')->middleware('auth');
 
+// Route from navbar link Order History to TranscationsController orderIndex function
+Route::get('/order', 'TransactionsController@orderIndex');
+
 // Route from transaction history link to TransactionsController index function
 Route::get('/transactions', 'TransactionsController@index');
 
