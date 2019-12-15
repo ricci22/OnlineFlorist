@@ -25,22 +25,22 @@ Route::get('/', 'PagesController@index');
 Route::get('/profile', 'UsersController@show')->middleware('auth');
 
 // Route from navbar link Order History to TranscationsController orderIndex function
-Route::get('/order', 'TransactionsController@orderIndex');
+Route::get('/order', 'TransactionsController@orderIndex')->middleware('auth');
 
 // Route from transaction history link to TransactionsController index function
-Route::get('/transactions', 'TransactionsController@index');
+Route::get('/transactions', 'TransactionsController@index')->middleware('admin');
 
 // Route to map the UsersController resources to Views users and related action
-Route::resource('users', 'UsersController');
+Route::resource('users', 'UsersController')->middleware('auth');
 
 // Route to map the FlowerTypesController resources to Views flower_types
-Route::resource('flower_types', 'FlowerTypesController');
+Route::resource('flower_types', 'FlowerTypesController')->middleware('admin');
 
 // Route to map the CouriersController resources to Views couriers
-Route::resource('couriers', 'CouriersController');
+Route::resource('couriers', 'CouriersController')->middleware('admin');
 
 // Route to map the FlowersController resources to Views flowers and related action
-Route::resource('flowers', 'FlowersController');
+Route::resource('flowers', 'FlowersController')->middleware('admin');
 
 // Route to map the CartsController resources to Views carts and related action
 Route::resource('carts', 'CartsController');

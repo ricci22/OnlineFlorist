@@ -15,8 +15,12 @@ class UsersController extends Controller
      */
     public function index()
     {
-      $users = User::orderBy('id', 'asc')->paginate(8);
-      return view('users.index')->with('users', $users);
+      // authenticat if the user is Admin (user_id == 1)
+      if (Auth::id() == 1) {
+        $users = User::orderBy('id', 'asc')->paginate(8);
+        return view('users.index')->with('users', $users);
+      }
+      return redirect('/')->with('error', 'Unauthorized User');
     }
 
     /**

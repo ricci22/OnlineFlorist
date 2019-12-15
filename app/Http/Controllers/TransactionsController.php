@@ -16,9 +16,12 @@ class TransactionsController extends Controller
    */
   public function index()
   {
-    $transactions = Transaction::all();
-    $transactionDetails = TransactionDetails::all();
-    return view('transactions.index')->with(compact('transactions', 'transactionDetails'));
+    if (Auth::id() == 1) {
+      $transactions = Transaction::all();
+      $transactionDetails = TransactionDetails::all();
+      return view('transactions.index')->with(compact('transactions', 'transactionDetails'));
+    }
+    return redirect('/')->with('error', 'Unauthorized User');
   }
 
   public function orderIndex()
