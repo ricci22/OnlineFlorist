@@ -31,11 +31,15 @@
                 <td width="15%">
                   <div class="row">
                     <a href="/users/{{$user->id}}/edit" class="btn btn-dark float-left">Update</a>
+                    @if ($user->id == 1)
+                      <h7>You can't remove Admin</h7>
+                    @else
                     <form action="/users/{{$user->id}}" method="post">
                       @csrf
                       @method('delete')
                       <input type="submit" class="btn btn-secondary" value="Remove">
                     </form>
+                    @endif
                   </div>
                 </td>
               </tr>

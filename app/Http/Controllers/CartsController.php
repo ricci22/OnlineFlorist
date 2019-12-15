@@ -21,12 +21,26 @@ class CartsController extends Controller
      */
     public function index()
     {
-      $cartDetails = CartDetail::All();
+      // returning cart data according to the user Cart
+      $userID = Auth::id();
+
+      // validate if cart exist
+      $cart = Cart::where('user_id', $userID)->first();
+      if (!$cart) {
+        $cartExist = false;
+        return view('carts.index')->with(compact('cartExist'));
+      }
+      else {
+        $cartExist = true;
+      }
+
+      $cartID = $cart->id;
+      $cartDetails = CartDetail::all()->where('cart_id', $cartID);
       $cartsTotal = $cartDetails->sum('total');
       $flowers = Flower::All();
       $couriers= Courier::All();
       return view('carts.index')
-        ->with(compact('cartDetails', 'flowers', 'cartsTotal', 'couriers'));
+        ->with(compact('cartDetails', 'flowers', 'cartsTotal', 'couriers', 'cartExist'));
     }
 
     /**
@@ -52,6 +66,11 @@ class CartsController extends Controller
           return redirect('/carts')->with('error', 'You need to select the Courier');
         }
         else {
+          // query the User cart
+          $userID = Auth::id();
+          $cart = Cart::where('user_id', $userID)->first();
+          $cartID = $cart->id;
+
           $transaction = new Transaction();
           $transaction->user_id = Auth::id();
           $transaction->courier_id = $request->input('courier');
@@ -65,7 +84,7 @@ class CartsController extends Controller
           $transaction->uname = $userName;
 
           // calculate the grand total to store
-          $cartDetails = CartDetail::All();
+          $cartDetails = CartDetail::all()->where('cart_id', $cartID);
           $cartTotal = $cartDetails->sum('total');
           $courierPrice = Courier::find($transaction->courier_id)->shippingCost;
           $transaction->total = $cartTotal + $courierPrice;
@@ -93,7 +112,7 @@ class CartsController extends Controller
             // Delete the CartDetail data
             $cartDetail->delete();
           }
-
+          $cart->delete();
           return redirect('order')->with('success', 'Your Order has been processed, Thank You for Shopping!');
         }
       }
@@ -121,6 +140,7 @@ class CartsController extends Controller
      */
     public function edit($id)
     {
+      // validate user is logged in
       if(!Auth::check()) {
         return view('auth.login')->with('error', 'You need to be logged in first');
       }
@@ -134,10 +154,11 @@ class CartsController extends Controller
         $cart->save();
       }
 
-      $cart = Cart::where('user_id',$userID);
-      $cartID = $cart->user_id;
+      // Saving data CartDetail according to the cart_id
+      $cart = Cart::where('user_id', $userID)->first();
+      $cartID = $cart->id;
       $flowerStock = Flower::find($id)->stock;
-      $data = CartDetail::where('user_id', $cartID)->first();
+      $data = CartDetail::where('cart_id', $cartID)->where('flower_id', $id)->first();
       if(is_null($data)) {
         $cartDetail = new CartDetail();
         // adding the cart id into new cart
@@ -174,16 +195,37 @@ class CartsController extends Controller
      */
     public function update(Request $request, $id)
     {
+      // validate if user is logged in
       if(!Auth::check()) {
         return view('auth.login')->with('error', 'You need to be logged in first');
       }
 
-      $flowerStock = Flower::find($id)->stock;
+      // validate if user entering the amount of qty
       $qty = $request->input('qty');
-      $data = CartDetail::where('flower_id', $id)->first();
+      if (is_null($qty)) {
+        return redirect ('/flowers/'.$id)->with('error', 'You need to enter the amount to add to cart');
+      }
+
+      // check if there is already a cart relate to the user
+      $userID = Auth::id();
+      $cartExist = Cart::where('user_id', $userID)->first();
+      if (is_null($cartExist)) {
+        $cart = new Cart();
+        $cart->user_id = $userID;
+        $cart->save();
+      }
+
+      // Saving data CartDetail according to the cart_id
+      $cart = Cart::where('user_id', $userID)->first();
+      $cartID = $cart->id;
+      $flowerStock = Flower::find($id)->stock;
+      $qtyInput = $request->input('qty');
+      $data = CartDetail::where('cart_id', $cartID)->where('flower_Id', $id)->first();
+
       if(is_null($data)) {
         $cartDetail = new CartDetail();
-        $cartDetail->qty = $qty;
+        $cartDetail->cart_id = $cartID;
+        $cartDetail->qty = $qtyInput;
         // validate the qty Ordered must not exceed the flower Stock
         if ($cartDetail->qty > $flowerStock) {
           return redirect('/flowers/'.$id)->with('error', 'Your order exceed the flower stock limit, Check your Cart');
@@ -193,8 +235,8 @@ class CartsController extends Controller
         $cartDetail->save();
       }
       else {
-        $cartDetail = CartDetail::where('flower_id', $id)->first();
-        $cartDetail->qty += $qty;
+        $cartDetail = CartDetail::where('cart_id', $cartID)->where('flower_id', $id)->first();
+        $cartDetail->qty += $qtyInput;
         // validate the qty Ordered must not exceed the flower Stock
         if ($cartDetail->qty > $flowerStock) {
           return redirect('/flowers/'.$id)->with('error', 'Your order exceed the flower stock limit, Check your Cart');
@@ -214,7 +256,12 @@ class CartsController extends Controller
     public function destroy($id)
     {
       $cartDetail = CartDetail::find($id);
+      $cartID = $cartDetail->cart_id;
+      $cart = Cart::find($cartID);
       $cartDetail->delete();
+      if (is_null($cart->cartDetails)) {
+        $cart->delete();
+      }
       return redirect('carts/')->with('success', 'Item Removed');
     }
 }

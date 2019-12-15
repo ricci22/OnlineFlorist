@@ -30,11 +30,15 @@
                 <td width="15%">
                   <div class="row">
                     <a href="/users/<?php echo e($user->id); ?>/edit" class="btn btn-dark float-left">Update</a>
+                    <?php if($user->id == 1): ?>
+                      <h7>You can't remove Admin</h7>
+                    <?php else: ?>
                     <form action="/users/<?php echo e($user->id); ?>" method="post">
                       <?php echo csrf_field(); ?>
                       <?php echo method_field('delete'); ?>
                       <input type="submit" class="btn btn-secondary" value="Remove">
                     </form>
+                    <?php endif; ?>
                   </div>
                 </td>
               </tr>
