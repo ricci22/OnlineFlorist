@@ -134,10 +134,14 @@ class CartsController extends Controller
         $cart->save();
       }
 
+      $cart = Cart::where('user_id',$userID);
+      $cartID = $cart->user_id;
       $flowerStock = Flower::find($id)->stock;
-      $data = CartDetail::where('flower_id', $id)->where('user_id', $userID)->first();
+      $data = CartDetail::where('user_id', $cartID)->first();
       if(is_null($data)) {
         $cartDetail = new CartDetail();
+        // adding the cart id into new cart
+        $cartDetail->cart_id = $cartID;
         $cartDetail->qty = 1;
         // validate the qty Ordered must not exceed the flower Stock
         if ($cartDetail->qty > $flowerStock) {
@@ -145,7 +149,6 @@ class CartsController extends Controller
         }
         $cartDetail->flower_id = $id;
         $cartDetail->total = Flower::find($id)->price;
-        $cartDetail->user_id = $userID;
         $cartDetail->save();
       }
       else {
