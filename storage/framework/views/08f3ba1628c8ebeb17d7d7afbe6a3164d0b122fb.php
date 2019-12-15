@@ -7,7 +7,13 @@
   Manage Couriers
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-  <?php echo $__env->make('inc.search', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+  <div class="justify-content-center">
+    <form class="form-inline" action="/couriers/search" method="post">
+      <?php echo csrf_field(); ?>
+      <input class="form-control col-lg-5 ml-auto mr-2" type="text" name="search" placeholder="I want to find...">
+      <button type="submit" class="btn btn-primary text-white mr-auto ml-2">Search</button>
+    </form>
+  </div>
   <?php if(count($couriers) > 0): ?>
     <div class="container">
       <div class="row justify-content-center">

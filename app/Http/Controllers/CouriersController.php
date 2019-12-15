@@ -102,4 +102,11 @@ class CouriersController extends Controller
       $courier->delete();
       return redirect('/couriers')->with('success', 'Courier Deleted');
     }
+
+    public function search(Request $request){
+      $keyword = $request->input('search');
+      $couriers = Courier::where('name', 'like', '%'.$keyword.'%')->orderBy('name','asc')
+        ->paginate(10);
+      return view('couriers.index')->with('couriers', $couriers);
+    }
 }

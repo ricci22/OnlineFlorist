@@ -3,7 +3,6 @@
   Manage Users
 @endsection
 @section('content')
-  @include('inc.search')
   @if(count($users) > 0)
     <div class="container mt-3">
       <div class="row justify-content-center">

@@ -170,4 +170,12 @@ class FlowersController extends Controller
       $flower->delete();
       return redirect('/flowers')->with('success', 'Flower Deleted');
     }
+
+    // To return the search result from keyword request
+    public function search(Request $request){
+      $keyword = $request->input('search');
+      $flowers = Flower::where('name', 'like', '%'.$keyword.'%')->orderBy('name','asc')
+        ->paginate(10);
+      return view('pages.index')->with('flowers', $flowers);
+    }
 }

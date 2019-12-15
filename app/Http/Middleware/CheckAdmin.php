@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class CheckAdmin
 {
@@ -15,8 +16,9 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        // authenticat if the user is Admin (user_id == 1)
-        if ($request->id != 1) {
+        // authenticate if the user is Admin (user_id == 1)
+        $id = Auth::id();
+        if ($id != 1) {
           return redirect('/')->with('error', 'Unauthorized User');
         }
         return $next($request);

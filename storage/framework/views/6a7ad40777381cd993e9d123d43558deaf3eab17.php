@@ -2,7 +2,6 @@
   Manage Users
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-  <?php echo $__env->make('inc.search', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
   <?php if(count($users) > 0): ?>
     <div class="container mt-3">
       <div class="row justify-content-center">

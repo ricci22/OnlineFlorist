@@ -3,7 +3,13 @@
   Catalog
 @endsection
 @section('content')
-  @include('inc.search')
+  <div class="justify-content-center">
+    <form class="form-inline" action="/home/search" method="post">
+      @csrf
+      <input class="form-control col-lg-5 ml-auto mr-2" type="text" name="search" placeholder="I want to find...">
+      <button type="submit" class="btn btn-primary text-white mr-auto ml-2">Search</button>
+    </form>
+  </div>
   @if(count($flowers) > 0)
     <div class="container">
       <div class="row justify-content-center">

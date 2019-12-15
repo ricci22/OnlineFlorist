@@ -98,4 +98,12 @@ class FlowerTypesController extends Controller
       $flowerType->delete();
       return redirect('/flower_types')->with('success', 'Flower Type Deleted');
     }
+
+    // To return the search result from input keyword
+    public function search(Request $request){
+      $keyword = $request->input('search');
+      $flowerTypes = FlowerType::where('name', 'like', '%'.$keyword.'%')->orderBy('name','asc')
+        ->paginate(10);
+      return view('flower_types.index')->with('flowerTypes', $flowerTypes);
+    }
 }

@@ -20,6 +20,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 // Route from home page, to get the Flower Controller index function
 Route::get('/', 'PagesController@index');
+Route::post('/home/search', 'PagesController@search');
 
 // Route from profile link to UsersController show function
 Route::get('/profile', 'UsersController@show')->middleware('auth');
@@ -35,12 +36,15 @@ Route::resource('users', 'UsersController')->middleware('auth');
 
 // Route to map the FlowerTypesController resources to Views flower_types
 Route::resource('flower_types', 'FlowerTypesController')->middleware('admin');
+Route::post('/flower_types/search', 'FlowerTypesController@search')->middleware('admin');
 
 // Route to map the CouriersController resources to Views couriers
 Route::resource('couriers', 'CouriersController')->middleware('admin');
+Route::post('couriers/search', 'CouriersController@search')->middleware('admin');
 
 // Route to map the FlowersController resources to Views flowers and related action
 Route::resource('flowers', 'FlowersController')->middleware('admin');
+Route::post('flowers/search', 'FlowersController@search')->middleware('admin');
 
 // Route to map the CartsController resources to Views carts and related action
 Route::resource('carts', 'CartsController');
