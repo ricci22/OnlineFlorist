@@ -14,7 +14,7 @@ use App\Flower;
 
 class CartsController extends Controller
 {
-    /**
+    /**Cart Page
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -39,7 +39,7 @@ class CartsController extends Controller
         //
     }
 
-    /**
+    /**Cart Checkout
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -113,7 +113,7 @@ class CartsController extends Controller
         //
     }
 
-    /**
+    /**Order button to increase the qty of order
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -121,8 +121,21 @@ class CartsController extends Controller
      */
     public function edit($id)
     {
+      if(!Auth::check()) {
+        return view('auth.login')->with('error', 'You need to be logged in first');
+      }
+
+      // check if there is already a cart relate to the user
+      $userID = Auth::id();
+      $cartExist = Cart::where('user_id', $userID)->first();
+      if (is_null($cartExist)) {
+        $cart = new Cart();
+        $cart->user_id = $userID;
+        $cart->save();
+      }
+
       $flowerStock = Flower::find($id)->stock;
-      $data = CartDetail::where('flower_id', $id)->first();
+      $data = CartDetail::where('flower_id', $id)->where('user_id', $userID)->first();
       if(is_null($data)) {
         $cartDetail = new CartDetail();
         $cartDetail->qty = 1;
@@ -132,10 +145,11 @@ class CartsController extends Controller
         }
         $cartDetail->flower_id = $id;
         $cartDetail->total = Flower::find($id)->price;
+        $cartDetail->user_id = $userID;
         $cartDetail->save();
       }
       else {
-        $cartDetail = CartDetail::where('flower_id', $id)->first();
+        $cartDetail = $data;
         $cartDetail->qty += 1;
         // validate the qty Ordered must not exceed the flower Stock
         if ($cartDetail->qty > $flowerStock) {
@@ -144,10 +158,11 @@ class CartsController extends Controller
         $cartDetail->total = Flower::find($id)->price * $cartDetail->qty;
         $cartDetail->save();
       }
+
       return redirect('/')->with('success', 'Adding your Order to your Cart');
     }
 
-    /**
+    /**Add to Cart button to increase/add qty to order
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -156,6 +171,10 @@ class CartsController extends Controller
      */
     public function update(Request $request, $id)
     {
+      if(!Auth::check()) {
+        return view('auth.login')->with('error', 'You need to be logged in first');
+      }
+
       $flowerStock = Flower::find($id)->stock;
       $qty = $request->input('qty');
       $data = CartDetail::where('flower_id', $id)->first();
@@ -183,7 +202,7 @@ class CartsController extends Controller
       return redirect('/flowers/'.$id)->with('success', 'Adding your Order to your Cart');
     }
 
-    /**
+    /**Cart Page, remove item from order
      * Remove the specified resource from storage.
      *
      * @param  int  $id

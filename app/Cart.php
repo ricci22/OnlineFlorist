@@ -19,4 +19,10 @@ class Cart extends Model
   public function courier(){
     return $this->belongsTo('App\Courier', 'courier_id','id');
   }
+  public function user(){
+    return $this->belongsTo('App\User', 'user_id','id');
+  }
+  public function cartdetails(){
+    return $this->hasMany('App\CartDetails');
+  }
 }

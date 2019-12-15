@@ -19,4 +19,7 @@ class CartDetail extends Model
   public function flower() {
     return $this->belongsTo('App\Flower', 'flower_id', 'id');
   }
+  public function cart() {
+    return $this->belongsTo('App\Cart', 'cart_id', 'id');
+  }
 }
