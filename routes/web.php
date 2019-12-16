@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route from home page, to get the Flower Controller index function
 Route::get('/', 'PagesController@index');
 Route::post('/home/search', 'PagesController@search');
+Route::get('/pages/{flower}', 'PagesController@show');
 
 // Route from profile link to UsersController show function
 Route::get('/profile', 'UsersController@show')->middleware('auth');
