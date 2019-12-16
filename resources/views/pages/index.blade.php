@@ -14,7 +14,7 @@
     <div class="container">
       <div class="row justify-content-center">
         @foreach($flowers as $flower)
-          <a href="/flowers/{{$flower->id}}" class="text-decoration-none !important text-dark">
+          <a href="/pages/{{$flower->id}}" class="text-decoration-none !important text-dark">
             <div class="card m-2" style="width: 15rem;height: 20rem">
               <div class="card-body">
                 <h4 class="card-title text-center">{{$flower->name}}</h4>
@@ -23,7 +23,7 @@
                   <p class="card-text">{{(substr($flower->desc, 0, 45)."...")}}</p>
                 </div>
                 <div class="row justify-content-center">
-                  <a href="/flowers/{{$flower->id}}" class="btn btn-dark ml-sm-4 mr-auto">Details</a>
+                  <a href="/pages/{{$flower->id}}" class="btn btn-dark ml-sm-4 mr-auto">Details</a>
                   <a href="/carts/{{$flower->id}}/edit" class="btn btn-secondary mr-sm-4 ml-auto">Order</a>
                 </div>
               </div>

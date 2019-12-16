@@ -20,4 +20,11 @@ class PagesController extends Controller
         ->paginate(10);
       return view('pages.index')->with('flowers', $flowers);
     }
+
+    // To show detail of flower and add to cart page
+    public function show($id)
+    {
+      $flower = Flower::find($id);
+      return view('pages.show')->with('flower', $flower);
+    }
 }

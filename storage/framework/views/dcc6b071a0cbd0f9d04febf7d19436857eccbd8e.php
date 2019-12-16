@@ -13,7 +13,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <?php $__currentLoopData = $flowers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $flower): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <a href="/flowers/<?php echo e($flower->id); ?>" class="text-decoration-none !important text-dark">
+          <a href="/pages/<?php echo e($flower->id); ?>" class="text-decoration-none !important text-dark">
             <div class="card m-2" style="width: 15rem;height: 20rem">
               <div class="card-body">
                 <h4 class="card-title text-center"><?php echo e($flower->name); ?></h4>
@@ -22,7 +22,7 @@
                   <p class="card-text"><?php echo e((substr($flower->desc, 0, 45)."...")); ?></p>
                 </div>
                 <div class="row justify-content-center">
-                  <a href="/flowers/<?php echo e($flower->id); ?>" class="btn btn-dark ml-sm-4 mr-auto">Details</a>
+                  <a href="/pages/<?php echo e($flower->id); ?>" class="btn btn-dark ml-sm-4 mr-auto">Details</a>
                   <a href="/carts/<?php echo e($flower->id); ?>/edit" class="btn btn-secondary mr-sm-4 ml-auto">Order</a>
                 </div>
               </div>
